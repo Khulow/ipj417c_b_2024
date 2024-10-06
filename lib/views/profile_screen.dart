@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ipj417c_b_2024/viewmodels/user_view_model.dart';
+import 'package:ipj417c_b_2024/views/auth/login_screen.dart'; // Ensure this import is correct
 import 'package:ipj417c_b_2024/views/edit_profile_screen.dart';
+import 'package:ipj417c_b_2024/views/listings_screen.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -8,19 +10,14 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-        backgroundColor: const Color(0xFF0A2540),
-        foregroundColor: Colors.white,
-      ),
-      body: Consumer<UserViewModel>(
+    return SafeArea(
+      child: Consumer<UserViewModel>(
         builder: (context, userViewModel, child) {
           if (userViewModel.user == null) {
             return const Center(child: CircularProgressIndicator());
           }
           return Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(28.0),
             child: Column(
               children: [
                 _buildAvatar(userViewModel),
@@ -42,13 +39,18 @@ class ProfileScreen extends StatelessWidget {
                           builder: (context) => const EditProfileScreen()));
                 }),
                 _buildListTile('Preferences', Icons.settings, () {}),
-                _buildListTile('My Listings', Icons.list, () {}),
+                _buildListTile('My Listings', Icons.list, () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ListingsView()));
+                }),
                 _buildListTile('Notifications', Icons.notifications, () {}),
                 _buildListTile('Help & Support', Icons.help, () {}),
                 const Spacer(),
                 ElevatedButton(
                   onPressed: () {
                     // Implement log out functionality
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => LoginScreen()));
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,

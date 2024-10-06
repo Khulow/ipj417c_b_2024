@@ -56,6 +56,14 @@ class UserViewModel extends ChangeNotifier {
       notifyListeners();
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       _error = null;
+      await loadUserData(_auth.currentUser!.uid);
+
+      // Check if the logged-in user is an admin
+      if (_user?.role == UserRole.admin) {
+        print('Admin user logged in');
+        // You can add any additional admin-specific logic here
+      }
+
       return true;
     } catch (e) {
       _error = e.toString();

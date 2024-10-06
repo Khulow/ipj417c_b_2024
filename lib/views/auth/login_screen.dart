@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:ipj417c_b_2024/viewmodels/auth_view_model.dart';
+import 'package:ipj417c_b_2024/models/user.dart';
 import 'package:ipj417c_b_2024/viewmodels/user_view_model.dart';
+import 'package:ipj417c_b_2024/views/admin_listing_view.dart';
 import 'package:ipj417c_b_2024/views/auth/register_screen.dart';
+import 'package:ipj417c_b_2024/views/home/home_page.dart';
 import 'package:ipj417c_b_2024/views/profile_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -40,8 +42,15 @@ class LoginScreen extends StatelessWidget {
                   _passwordController.text,
                 );
                 if (success) {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => const ProfileScreen()));
+                  if (authViewModel.user?.role == UserRole.admin) {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (_) => AdminListingsView()));
+                  } else {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HomePage()));
+                  }
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(

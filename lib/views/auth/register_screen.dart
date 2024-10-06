@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ipj417c_b_2024/viewmodels/auth_view_model.dart';
 import 'package:ipj417c_b_2024/viewmodels/user_view_model.dart';
 import 'package:ipj417c_b_2024/views/profile_screen.dart';
 import 'package:provider/provider.dart';
