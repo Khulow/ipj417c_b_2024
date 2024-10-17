@@ -1,65 +1,68 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Listing {
-  String listingId;
-  final String ownerId;
+  String id;
+  String ownerId;
   String title;
   String description;
   double price;
   String address;
   List<String> images;
-  List<String> amenities;
-  List<String> rules;
-  bool isVerified;
+  bool isAvailable;
+  String category;
   String status;
+  //ADD AVERAGE RATING
   double averageRating;
 
   Listing({
-    required this.listingId,
+    required this.id,
     required this.ownerId,
     required this.title,
     required this.description,
     required this.price,
     required this.address,
     this.images = const [],
-    this.amenities = const [],
-    this.rules = const [],
-    this.isVerified = false,
-    this.status = 'pending',
-    this.averageRating = 0.0,
+    this.isAvailable = true,
+    this.category = '',
+    this.averageRating = 0,
+    this.status = 'Pending',
   });
 
   factory Listing.fromFirestore(DocumentSnapshot doc) {
-    Map data = doc.data() as Map<String, dynamic>;
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return Listing(
-      listingId: doc.id,
+      id: doc.id,
       ownerId: data['ownerId'] ?? '',
       title: data['title'] ?? '',
       description: data['description'] ?? '',
       price: (data['price'] ?? 0).toDouble(),
       address: data['address'] ?? '',
       images: List<String>.from(data['images'] ?? []),
-      amenities: List<String>.from(data['amenities'] ?? []),
-      rules: List<String>.from(data['rules'] ?? []),
-      isVerified: data['isVerified'] ?? false,
-      status: data['status'] ?? 'pending',
+      isAvailable: data['isAvailable'] ?? true,
+      category: data['category'] ?? '',
       averageRating: (data['averageRating'] ?? 0).toDouble(),
+      status: data['status'] ?? 'Pending',
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'ownerId': ownerId,
       'title': title,
       'description': description,
       'price': price,
       'address': address,
       'images': images,
-      'amenities': amenities,
-      'rules': rules,
-      'isVerified': isVerified,
-      'status': status,
+      'isAvailable': isAvailable,
+      'category': category,
       'averageRating': averageRating,
+      'status': status,
     };
+  }
+
+  @override
+  String toString() {
+    return 'Listing(id: $id, title: $title, price: $price, category: $category, status: $status)';
   }
 }

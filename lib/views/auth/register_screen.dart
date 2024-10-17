@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ipj417c_b_2024/viewmodels/user_view_model.dart';
-import 'package:ipj417c_b_2024/views/profile_screen.dart';
+import 'package:ipj417c_b_2024/views/profile/profile_screen.dart';
 import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatelessWidget {

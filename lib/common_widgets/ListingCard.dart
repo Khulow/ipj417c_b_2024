@@ -1,27 +1,25 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:ipj417c_b_2024/models/listings.dart';
 import 'package:ipj417c_b_2024/views/listing_view_detail.dart';
 
-class ListingCard extends StatelessWidget {
-  final QueryDocumentSnapshot listing;
+class ListingUserCard extends StatelessWidget {
+  final Listing listing;
 
-  const ListingCard({super.key, required this.listing});
+  const ListingUserCard({super.key, required this.listing});
 
   @override
   Widget build(BuildContext context) {
-    var data = listing.data() as Map<String, dynamic>;
-    String status = data['status'] ?? 'Unknown';
+    String status = listing.status;
 
     return Card(
-      margin: EdgeInsets.all(8.0),
+      margin: const EdgeInsets.all(8.0),
       child: ListTile(
-        title: Text(data['title'] ?? 'No Title'),
+        title: Text(listing.title),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-                '${data['price'] ?? 'N/A'} - ${data['neighborhood'] ?? 'N/A'}'),
-            SizedBox(height: 4),
+            Text('${listing.price} - ${listing.address}'),
+            const SizedBox(height: 4),
             Text(
               'Status: $status',
               style: TextStyle(
@@ -31,10 +29,10 @@ class ListingCard extends StatelessWidget {
             ),
           ],
         ),
-        leading: data['images'] != null && (data['images'] as List).isNotEmpty
-            ? Image.network(data['images'][0],
+        leading: listing.images.isNotEmpty
+            ? Image.network(listing.images[0],
                 width: 50, height: 50, fit: BoxFit.cover)
-            : Icon(Icons.home),
+            : const Icon(Icons.home),
         onTap: () {
           Navigator.push(
             context,

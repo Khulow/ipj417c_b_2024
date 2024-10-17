@@ -3,6 +3,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:ipj417c_b_2024/models/listings.dart';
 import 'package:ipj417c_b_2024/models/user.dart';
 
 class UserViewModel extends ChangeNotifier {
@@ -205,6 +206,157 @@ class UserViewModel extends ChangeNotifier {
       return result;
     } finally {
       _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> addListingToUser(String listingId) async {
+    if (_user != null) {
+      _user!.userListings.add(listingId);
+      await _firestore.collection('users').doc(_user!.userId).update({
+        'userListings': FieldValue.arrayUnion([listingId]),
+      });
+      notifyListeners();
+    }
+  }
+
+  Future<void> removeListingFromUser(String listingId) async {
+    if (_user != null) {
+      _user!.userListings.remove(listingId);
+      await _firestore.collection('users').doc(_user!.userId).update({
+        'userListings': FieldValue.arrayRemove([listingId]),
+      });
+      notifyListeners();
+    }
+  }
+
+  Future<List<Listing>> fetchUserListings() async {
+    if (_user == null) return [];
+
+    try {
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('listings')
+          .where('ownerId', isEqualTo: _user!.userId)
+          .get();
+
+      return querySnapshot.docs
+          .map((doc) => Listing.fromFirestore(doc))
+          .toList();
+    } catch (e) {
+      _error = "Error fetching user listings: $e";
+      notifyListeners();
+      return [];
+    }
+  }
+
+  Future<List<Listing>> fetchUserPendingListings() async {
+    if (_user == null) return [];
+
+    try {
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('listings')
+          .where('ownerId', isEqualTo: _user!.userId)
+          .where('status', isEqualTo: 'pending')
+          .get();
+
+      return querySnapshot.docs
+          .map((doc) => Listing.fromFirestore(doc))
+          .toList();
+    } catch (e) {
+      _error = "Error fetching user pending listings: $e";
+      notifyListeners();
+      return [];
+    }
+  }
+
+  Future<void> updateListingStatus(String listingId, String newStatus) async {
+    try {
+      await _firestore
+          .collection('listings')
+          .doc(listingId)
+          .update({'status': newStatus});
+      notifyListeners();
+    } catch (e) {
+      _error = "Error updating listing status: $e";
+      notifyListeners();
+    }
+  }
+
+  Future<void> resubmitListing(Listing listing) async {
+    if (_user == null) return;
+
+    try {
+      // Update the listing status to 'pending'
+      listing.status = 'pending';
+
+      // Update the listing in Firestore
+      await _firestore
+          .collection('listings')
+          .doc(listing.id)
+          .update(listing.toMap());
+
+      // Notify the user about the resubmission
+      await notifyUserAboutListing(listing.id, 'resubmitted');
+    } catch (e) {
+      _error = "Failed to resubmit listing: $e";
+      notifyListeners();
+    }
+  }
+
+  Future<void> markNotificationAsRead(String notificationId) async {
+    if (_user == null) return;
+
+    try {
+      await _firestore
+          .collection('users')
+          .doc(_user!.userId)
+          .collection('notifications')
+          .doc(notificationId)
+          .update({'read': true});
+    } catch (e) {
+      _error = "Failed to mark notification as read: $e";
+      notifyListeners();
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getUnreadNotifications() async {
+    if (_user == null) return [];
+
+    try {
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('users')
+          .doc(_user!.userId)
+          .collection('notifications')
+          .where('read', isEqualTo: false)
+          .orderBy('timestamp', descending: true)
+          .get();
+
+      return querySnapshot.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
+    } catch (e) {
+      _error = "Failed to fetch notifications: $e";
+      notifyListeners();
+      return [];
+    }
+  }
+
+  Future<void> notifyUserAboutListing(String listingId, String status) async {
+    if (_user == null) return;
+
+    try {
+      await _firestore
+          .collection('users')
+          .doc(_user!.userId)
+          .collection('notifications')
+          .add({
+        'listingId': listingId,
+        'status': status,
+        'timestamp': FieldValue.serverTimestamp(),
+        'read': false,
+      });
+    } catch (e) {
+      _error = "Failed to send notification: $e";
       notifyListeners();
     }
   }

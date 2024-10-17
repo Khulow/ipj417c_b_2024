@@ -46,6 +46,7 @@ dependencies:
   firebase_storage: ^12.3.2
   image_picker: ^1.1.2
   permission_handler: ^11.3.1
+  dynamic_multi_step_form: ^1.1.5
 
 flutter_native_splash:
   color: "#ffffff"

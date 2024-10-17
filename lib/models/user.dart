@@ -12,7 +12,7 @@ class User {
   String profilePictureUrl;
   UserRole role;
   List<String> favoriteListings;
-  //preferences
+  List<String> userListings; //preferences
   //recentSEARVCHES
 
   User({
@@ -22,6 +22,7 @@ class User {
     this.profilePictureUrl = '',
     this.role = UserRole.user,
     this.favoriteListings = const [],
+    this.userListings = const [],
   });
 
   //user helper function
@@ -44,6 +45,7 @@ class User {
       profilePictureUrl: data['profilePictureUrl'] ?? '',
       role: _getUserRole(data['role'] ?? 'user'),
       favoriteListings: List<String>.from(data['favoriteListings'] ?? []),
+      userListings: List<String>.from(data['userListings'] ?? []),
     );
   }
 
@@ -54,6 +56,7 @@ class User {
       'profilePictureUrl': profilePictureUrl,
       'role': role.toString().split('.').last, // convert the enum to a string
       'favoriteListings': favoriteListings,
+      'userListings': userListings,
     };
   }
 }

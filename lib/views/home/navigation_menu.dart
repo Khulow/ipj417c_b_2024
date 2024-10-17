@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:ipj417c_b_2024/providers/navigation_provider.dart';
-import 'package:ipj417c_b_2024/views/home_screen.dart';
-import 'package:ipj417c_b_2024/views/profile_screen.dart';
+import 'package:ipj417c_b_2024/views/home/home_screen.dart';
+import 'package:ipj417c_b_2024/views/profile/profile_screen.dart';
 import 'package:provider/provider.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class NavigationMenu extends StatelessWidget {
+  const NavigationMenu({super.key});
 
   @override
   Widget build(BuildContext context) {

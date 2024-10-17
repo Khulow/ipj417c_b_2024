@@ -4,13 +4,13 @@ import 'package:ipj417c_b_2024/firebase_options.dart';
 import 'package:ipj417c_b_2024/providers/navigation_provider.dart';
 import 'package:ipj417c_b_2024/viewmodels/listing_view_model.dart';
 import 'package:ipj417c_b_2024/viewmodels/user_view_model.dart';
-import 'package:ipj417c_b_2024/views/admin_listing_view.dart';
+import 'package:ipj417c_b_2024/views/admin/admin_listing_view.dart';
 import 'package:ipj417c_b_2024/views/auth/login_screen.dart';
-import 'package:ipj417c_b_2024/views/home/home_page.dart';
+import 'package:ipj417c_b_2024/views/home/navigation_menu.dart';
 import 'package:ipj417c_b_2024/views/onboarding/onboarding.dart';
 import 'package:provider/provider.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
       providers: [
         // Add a ChangeNotifierProvider for UserViewModel
         ChangeNotifierProvider(create: (context) => UserViewModel()),
-        ChangeNotifierProvider(create: (context) => ListingsViewModel()),
+        ChangeNotifierProvider(create: (context) => ListingViewModel()),
         ChangeNotifierProvider(create: (context) => NavigationProvider()),
         //ChangeNotifierProvider(create: (context) => AuthViewModel()),
       ],

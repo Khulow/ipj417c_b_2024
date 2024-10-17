@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ipj417c_b_2024/widgets/admin_listing%20card.dart';
+import 'package:ipj417c_b_2024/views/admin/widgets/admin_listing%20card.dart';
 import 'package:provider/provider.dart';
-import 'package:ipj417c_b_2024/services/Listings_repository.dart';
 import 'package:ipj417c_b_2024/viewmodels/user_view_model.dart';
 import 'package:ipj417c_b_2024/views/auth/login_screen.dart';
 
 class AdminListingsView extends StatelessWidget {
-  final ListingRepository repository = ListingRepository();
-
-  AdminListingsView({super.key});
+  const AdminListingsView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,19 +43,15 @@ class AdminListingsView extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
+          final listings = snapshot.data!.docs;
 
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('No pending listings'));
+          if (listings.isEmpty) {
+            return const Center(child: Text('No pending listings.'));
           }
-
           return ListView.builder(
-            itemCount: snapshot.data!.docs.length,
+            itemCount: listings.length,
             itemBuilder: (context, index) {
-              var listing = snapshot.data!.docs[index];
-              return AdminListingCard(listing: listing);
+              return AdminListingCard(listing: listings[index]);
             },
           );
         },

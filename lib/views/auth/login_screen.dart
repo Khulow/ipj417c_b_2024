@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:ipj417c_b_2024/models/user.dart';
 import 'package:ipj417c_b_2024/viewmodels/user_view_model.dart';
-import 'package:ipj417c_b_2024/views/admin_listing_view.dart';
+import 'package:ipj417c_b_2024/views/admin/admin_listing_view.dart';
 import 'package:ipj417c_b_2024/views/auth/register_screen.dart';
-import 'package:ipj417c_b_2024/views/home/home_page.dart';
-import 'package:ipj417c_b_2024/views/profile_screen.dart';
+import 'package:ipj417c_b_2024/views/home/navigation_menu.dart';
+import 'package:ipj417c_b_2024/views/profile/profile_screen.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -43,13 +43,15 @@ class LoginScreen extends StatelessWidget {
                 );
                 if (success) {
                   if (authViewModel.user?.role == UserRole.admin) {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (_) => AdminListingsView()));
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const AdminListingsView()));
                   } else {
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const HomePage()));
+                            builder: (context) => const NavigationMenu()));
                   }
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(

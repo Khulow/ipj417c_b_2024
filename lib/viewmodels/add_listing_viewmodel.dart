@@ -1,9 +1,9 @@
-import 'package:flutter/foundation.dart';
+/* import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:ipj417c_b_2024/services/Listings_repository.dart';
+
 
 class AddListingViewModel extends ChangeNotifier {
-  final ListingRepository _repository;
+
 
   int _currentStep = 0;
   String _title = '';
@@ -196,3 +196,4 @@ class AddListingViewModel extends ChangeNotifier {
     }
   }
 }
+ */
