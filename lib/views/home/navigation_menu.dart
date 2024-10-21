@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ipj417c_b_2024/providers/navigation_provider.dart';
+import 'package:ipj417c_b_2024/views/home/favorite_screen.dart';
 import 'package:ipj417c_b_2024/views/home/home_screen.dart';
+import 'package:ipj417c_b_2024/views/home/notification_screen.dart';
 import 'package:ipj417c_b_2024/views/profile/profile_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -21,7 +23,7 @@ class NavigationMenu extends StatelessWidget {
             items: const [
               BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.search), label: 'Search'),
+                  icon: Icon(Icons.notifications), label: 'Notifications'),
               BottomNavigationBarItem(
                   icon: Icon(Icons.favorite), label: 'Favorites'),
               BottomNavigationBarItem(
@@ -39,9 +41,9 @@ Widget _getBodyWidget(int index) {
     case 0:
       return const HomeScreen();
     case 1:
-      return const Center(child: Text('Search Screen'));
+      return const NotificationScreen();
     case 2:
-      return const Center(child: Text('Favorites Screen'));
+      return const FavoriteScreen();
     case 3:
       return const ProfileScreen();
     default:

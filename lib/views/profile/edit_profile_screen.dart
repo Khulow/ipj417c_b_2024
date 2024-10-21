@@ -110,9 +110,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                             if (_formKey.currentState?.validate() ?? false) {
                               bool success =
                                   await userViewModel.updateProfileWithImage(
-                                _imageFile,
-                                _displayNameController.text,
-                              );
+                                      _imageFile, _displayNameController.text);
                               if (success) {
                                 Navigator.pop(context);
                               }

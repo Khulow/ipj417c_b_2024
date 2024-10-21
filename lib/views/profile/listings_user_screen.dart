@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ipj417c_b_2024/models/listings.dart';
 import 'package:ipj417c_b_2024/viewmodels/user_view_model.dart';
 import 'package:ipj417c_b_2024/views/add_listings.dart';
-import 'package:ipj417c_b_2024/common_widgets/ListingCard.dart';
-
+import 'package:ipj417c_b_2024/common_widgets/listingUserCard.dart';
 import 'package:provider/provider.dart';
 
 class ListingsUserScreen extends StatelessWidget {
@@ -44,7 +43,16 @@ class ListingsUserScreen extends StatelessWidget {
                 itemCount: userListings.length,
                 itemBuilder: (context, index) {
                   var listing = userListings[index];
-                  return ListingUserCard(listing: listing);
+
+                  return ListingUserCard(
+                    listing: listing,
+                    onEdit: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddListingScreen(),
+                      ),
+                    ),
+                  );
                 },
               );
             },

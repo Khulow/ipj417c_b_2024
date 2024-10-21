@@ -11,8 +11,24 @@ class Listing {
   bool isAvailable;
   String category;
   String status;
-  //ADD AVERAGE RATING
   double averageRating;
+  bool isFavorite;
+  List<String> amenities;
+  List<String> nearbyFacilities;
+  double distanceToCampus;
+  String roomType;
+  bool utilitiesIncluded;
+  String leaseDuration;
+  String contactNumber;
+  List<String> rules;
+  String furnishing;
+  int numberOfBedrooms;
+  int numberOfBathrooms;
+  List<Map<String, dynamic>> reviews;
+  String publicTransportAccess;
+  List<String> securityFeatures;
+  double depositAmount;
+  List<String> nearbyCampusAmenities;
 
   Listing({
     required this.id,
@@ -26,6 +42,23 @@ class Listing {
     this.category = '',
     this.averageRating = 0,
     this.status = 'Pending',
+    this.isFavorite = false,
+    this.amenities = const [],
+    this.nearbyFacilities = const [],
+    this.distanceToCampus = 0,
+    this.roomType = '',
+    this.utilitiesIncluded = false,
+    this.leaseDuration = '',
+    this.contactNumber = '',
+    this.rules = const [],
+    this.furnishing = '',
+    this.numberOfBedrooms = 0,
+    this.numberOfBathrooms = 0,
+    this.reviews = const [],
+    this.publicTransportAccess = '',
+    this.securityFeatures = const [],
+    this.depositAmount = 0,
+    this.nearbyCampusAmenities = const [],
   });
 
   factory Listing.fromFirestore(DocumentSnapshot doc) {
@@ -42,6 +75,24 @@ class Listing {
       category: data['category'] ?? '',
       averageRating: (data['averageRating'] ?? 0).toDouble(),
       status: data['status'] ?? 'Pending',
+      isFavorite: data['isFavorite'] ?? false,
+      amenities: List<String>.from(data['amenities'] ?? []),
+      nearbyFacilities: List<String>.from(data['nearbyFacilities'] ?? []),
+      distanceToCampus: (data['distanceToCampus'] ?? 0).toDouble(),
+      roomType: data['roomType'] ?? '',
+      utilitiesIncluded: data['utilitiesIncluded'] ?? false,
+      leaseDuration: data['leaseDuration'] ?? '',
+      contactNumber: data['contactNumber'] ?? '',
+      rules: List<String>.from(data['rules'] ?? []),
+      furnishing: data['furnishing'] ?? '',
+      numberOfBedrooms: data['numberOfBedrooms'] ?? 0,
+      numberOfBathrooms: data['numberOfBathrooms'] ?? 0,
+      reviews: List<Map<String, dynamic>>.from(data['reviews'] ?? []),
+      publicTransportAccess: data['publicTransportAccess'] ?? '',
+      securityFeatures: List<String>.from(data['securityFeatures'] ?? []),
+      depositAmount: (data['depositAmount'] ?? 0).toDouble(),
+      nearbyCampusAmenities:
+          List<String>.from(data['nearbyCampusAmenities'] ?? []),
     );
   }
 
@@ -58,11 +109,28 @@ class Listing {
       'category': category,
       'averageRating': averageRating,
       'status': status,
+      'isFavorite': isFavorite,
+      'amenities': amenities,
+      'nearbyFacilities': nearbyFacilities,
+      'distanceToCampus': distanceToCampus,
+      'roomType': roomType,
+      'utilitiesIncluded': utilitiesIncluded,
+      'leaseDuration': leaseDuration,
+      'contactNumber': contactNumber,
+      'rules': rules,
+      'furnishing': furnishing,
+      'numberOfBedrooms': numberOfBedrooms,
+      'numberOfBathrooms': numberOfBathrooms,
+      'reviews': reviews,
+      'publicTransportAccess': publicTransportAccess,
+      'securityFeatures': securityFeatures,
+      'depositAmount': depositAmount,
+      'nearbyCampusAmenities': nearbyCampusAmenities,
     };
   }
 
   @override
   String toString() {
-    return 'Listing(id: $id, title: $title, price: $price, category: $category, status: $status)';
+    return 'Listing(id: $id, title: $title, price: $price, category: $category, status: $status, isAvailable: $isAvailable, isFavorite: $isFavorite, amenities: $amenities, nearbyFacilities: $nearbyFacilities, distanceToCampus: $distanceToCampus, roomType: $roomType, utilitiesIncluded: $utilitiesIncluded, leaseDuration: $leaseDuration, contactNumber: $contactNumber, rules: $rules, furnishing: $furnishing, numberOfBedrooms: $numberOfBedrooms, numberOfBathrooms: $numberOfBathrooms, reviews: $reviews, publicTransportAccess: $publicTransportAccess, securityFeatures: $securityFeatures, depositAmount: $depositAmount, nearbyCampusAmenities: $nearbyCampusAmenities)';
   }
 }

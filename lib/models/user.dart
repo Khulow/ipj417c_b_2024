@@ -12,8 +12,7 @@ class User {
   String profilePictureUrl;
   UserRole role;
   List<String> favoriteListings;
-  List<String> userListings; //preferences
-  //recentSEARVCHES
+  List<String> userListings;
 
   User({
     required this.userId,

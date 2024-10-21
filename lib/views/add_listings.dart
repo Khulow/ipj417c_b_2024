@@ -1,14 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:ipj417c_b_2024/models/listings.dart';
-import 'package:ipj417c_b_2024/viewmodels/listing_view_model.dart';
-import 'package:ipj417c_b_2024/viewmodels/user_view_model.dart';
-import 'package:provider/provider.dart';
-import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:ipj417c_b_2024/models/listings.dart';
+import 'package:ipj417c_b_2024/views/add_listing_helper.dart';
 
 class AddListingScreen extends StatefulWidget {
-  const AddListingScreen({super.key});
+  final dynamic listing;
+
+  const AddListingScreen({super.key, this.listing});
 
   @override
   AddListingScreenState createState() => AddListingScreenState();
@@ -16,10 +15,9 @@ class AddListingScreen extends StatefulWidget {
 
 class AddListingScreenState extends State<AddListingScreen> {
   final _formKey = GlobalKey<FormState>();
-  final ImagePicker _picker = ImagePicker();
+  final AddListingHelper _helper = AddListingHelper();
 
   late Listing newListing;
-
   List<XFile> images = [];
 
   final List<String> categories = [
@@ -34,17 +32,41 @@ class AddListingScreenState extends State<AddListingScreen> {
   void initState() {
     super.initState();
     newListing = Listing(
-        id: '',
-        ownerId: '',
-        title: '',
-        description: '',
-        price: 0.0,
-        address: '',
-        category: 'Single',
-        isAvailable: true,
-        images: [],
-        averageRating: 0.0,
-        status: 'pending');
+      id: '',
+      ownerId: '',
+      title: '',
+      description: '',
+      price: 0.0,
+      address: '',
+      category: 'Single',
+      isAvailable: true,
+      images: [],
+      averageRating: 0.0,
+      status: 'pending',
+      depositAmount: 0.0,
+      distanceToCampus: 0.0,
+      nearbyCampusAmenities: [],
+      nearbyFacilities: [],
+      publicTransportAccess: '',
+      reviews: [],
+      roomType: '',
+      rules: [],
+      securityFeatures: [],
+      utilitiesIncluded: false,
+      amenities: [],
+      contactNumber: '',
+      furnishing: '',
+      isFavorite: false,
+      numberOfBathrooms: 0,
+      numberOfBedrooms: 0,
+    );
+  }
+
+  Future<void> _pickImages() async {
+    final List<XFile> selectedImages = await _helper.pickImages();
+    setState(() {
+      images.addAll(selectedImages);
+    });
   }
 
   @override
@@ -116,7 +138,8 @@ class AddListingScreenState extends State<AddListingScreen> {
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: _submitForm,
+                  onPressed: () => _helper.submitListing(
+                      newListing, images, context, _formKey),
                   child: const Text('Submit Listing'),
                 ),
               ],
@@ -125,121 +148,5 @@ class AddListingScreenState extends State<AddListingScreen> {
         ),
       ),
     );
-  }
-
-  Future<void> _pickImages() async {
-    final List<XFile>? selectedImages = await _picker.pickMultiImage();
-    if (selectedImages != null) {
-      setState(() {
-        images.addAll(selectedImages);
-      });
-    }
-  }
-
-  Future<List<String>> _uploadImages(List<XFile> images) async {
-    List<String> imageUrls = [];
-    for (var image in images) {
-      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-      Reference firebaseStorageRef =
-          FirebaseStorage.instance.ref().child('listing_images/$fileName');
-
-      try {
-        UploadTask uploadTask = firebaseStorageRef.putFile(File(image.path));
-        TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
-        String url = await taskSnapshot.ref.getDownloadURL();
-        imageUrls.add(url);
-      } catch (e) {
-        print("Error uploading image: $e");
-        // If there's an error, we'll skip this image and continue with others
-        continue;
-      }
-    }
-    return imageUrls;
-  }
-
-  Future<void> _submitForm() async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-
-      final userViewModel = Provider.of<UserViewModel>(context, listen: false);
-      final listingViewModel =
-          Provider.of<ListingViewModel>(context, listen: false);
-
-      if (userViewModel.user == null) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('You must be logged in to create a listing')));
-        return;
-      }
-
-      // Ensure all required fields are set
-      if (newListing.title.isEmpty ||
-          newListing.description.isEmpty ||
-          newListing.price <= 0 ||
-          newListing.address.isEmpty ||
-          newListing.category.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Please fill in all required fields')));
-        return;
-      }
-
-      newListing.ownerId = userViewModel.user!.userId;
-      newListing.isAvailable = true;
-      newListing.averageRating = 0.0;
-      newListing.status = 'pending';
-
-      String? listingId;
-
-      try {
-        // Show loading indicator
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return const Center(child: CircularProgressIndicator());
-          },
-        );
-
-        // Upload images
-        print("Uploading images...");
-        List<String> imageUrls = await _uploadImages(images);
-        newListing.images = imageUrls;
-        print("Images uploaded successfully: ${imageUrls.length} images");
-
-        // Add the listing
-        print("Adding listing to Firebase...");
-        listingId = await listingViewModel.addListing(
-            newListing, userViewModel.user!.userId);
-        print("Listing added successfully. ID: $listingId");
-
-        // Associate the listing with the user
-        print("Associating listing with user...");
-        await userViewModel.addListingToUser(listingId!);
-        print("Listing associated with user successfully");
-
-        print("All Firebase operations completed successfully");
-      } catch (e) {
-        print("Error during Firebase operations: $e");
-        // Even if there's an error, we don't return here, as the listing might have been created
-      } finally {
-        // Hide loading indicator
-        Navigator.of(context, rootNavigator: true).pop();
-      }
-
-      // UI updates and navigation
-      try {
-        if (listingId != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Listing submitted for approval')));
-          Navigator.pop(context);
-        } else {
-          throw Exception("Listing ID is null");
-        }
-      } catch (e) {
-        print("Error during UI update: $e");
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(
-                'Listing created, but there was an error updating the UI: $e')));
-      }
-    }
   }
 }

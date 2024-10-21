@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ipj417c_b_2024/viewmodels/user_view_model.dart';
+import 'package:ipj417c_b_2024/views/auth/login_screen.dart';
 import 'package:ipj417c_b_2024/views/profile/profile_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -46,7 +47,7 @@ class RegisterScreen extends StatelessWidget {
                 );
                 if (success) {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => const ProfileScreen()));
+                      MaterialPageRoute(builder: (_) => LoginScreen()));
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(

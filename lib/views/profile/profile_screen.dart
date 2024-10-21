@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ipj417c_b_2024/viewmodels/user_view_model.dart';
-import 'package:ipj417c_b_2024/views/auth/login_screen.dart'; // Ensure this import is correct
+import 'package:ipj417c_b_2024/views/auth/login_screen.dart';
 import 'package:ipj417c_b_2024/views/profile/edit_profile_screen.dart';
 import 'package:ipj417c_b_2024/views/profile/listings_user_screen.dart';
 import 'package:provider/provider.dart';
@@ -45,7 +45,6 @@ class ProfileScreen extends StatelessWidget {
                       MaterialPageRoute(
                           builder: (context) => const ListingsUserScreen()));
                 }),
-                _buildListTile('Notifications', Icons.notifications, () {}),
                 _buildListTile('Help & Support', Icons.help, () {}),
                 const Spacer(),
                 ElevatedButton(

@@ -4,10 +4,7 @@ import 'package:ipj417c_b_2024/firebase_options.dart';
 import 'package:ipj417c_b_2024/providers/navigation_provider.dart';
 import 'package:ipj417c_b_2024/viewmodels/listing_view_model.dart';
 import 'package:ipj417c_b_2024/viewmodels/user_view_model.dart';
-import 'package:ipj417c_b_2024/views/admin/admin_listing_view.dart';
 import 'package:ipj417c_b_2024/views/auth/login_screen.dart';
-import 'package:ipj417c_b_2024/views/home/navigation_menu.dart';
-import 'package:ipj417c_b_2024/views/onboarding/onboarding.dart';
 import 'package:provider/provider.dart';
 
 Future<void> main() async {
@@ -26,18 +23,21 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        // Add a ChangeNotifierProvider for UserViewModel
         ChangeNotifierProvider(create: (context) => UserViewModel()),
-        ChangeNotifierProvider(create: (context) => ListingViewModel()),
+        ChangeNotifierProxyProvider<UserViewModel, ListingViewModel>(
+          create: (context) => ListingViewModel(
+              Provider.of<UserViewModel>(context, listen: false)),
+          update: (context, userViewModel, listingViewModel) =>
+              ListingViewModel(userViewModel),
+        ),
         ChangeNotifierProvider(create: (context) => NavigationProvider()),
-        //ChangeNotifierProvider(create: (context) => AuthViewModel()),
       ],
       builder: (context, child) {
         return MaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'Flutter Demo',
             theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
               useMaterial3: true,
             ),
             home: //AdminListingsView()
